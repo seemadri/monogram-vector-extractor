@@ -32,10 +32,12 @@ def extract_foreground_mask(
     r, g, b = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
 
     brightness = (r + g + b) / 3.0
-    mask_condition = (brightness > min_brightness) & ((r - b) > warmth)
+    mask_condition = brightness > min_brightness
 
     if warmth > 0:
-        mask_condition &= (r > min_brightness + 10) & (g > min_brightness - 10)
+        mask_condition &= (r - b) > warmth
+        mask_condition &= (r > min_brightness + 10)
+        mask_condition &= (g > min_brightness - 10)
 
     raw_mask = mask_condition.astype(np.uint8) * 255
 
